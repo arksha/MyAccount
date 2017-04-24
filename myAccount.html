@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta http-equiv="content-type" content="application/x-www-form-urlencoded">
+		<meta name="description" content="">
+		<meta name="author" content="Ting Gong">
+		<link rel="icon" href="../../favicon.ico">
+
+		<title>MyAccount</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+		<style>
+			#map {
+				width: 100%;
+				height: 400px;
+				background-color: grey;
+			}
+		</style>
+		
+	</head>
+<body>
+	<div class="Container" ng-app="AccountApp" ng-controller="displayData">
+		<a ng-init="loadHello()"></a>
+		<div class="page-header" >
+			<h1>My Account</h1>
+			<p class='lead'>This is where you can view your account detail and credits.</p>
+		</div>
+		
+		<div class="row" id="infoPanel">
+			<div id="userInfo" class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+				<h2>User Information</h2>
+				<h3>User Name</h3>
+				<p>{{name}}</p>
+				<h3>License Plate Number</h3>
+				<p>{{licensePlateNo}}</p>
+				<h3>Phone Number</h3>
+				<p>{{phoneNo}}</p>
+			</div>
+			<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" >
+				<h2>Map Of Drunk Driver Around You</h2>
+				<div id="map"></div>
+
+			</div>
+		</div>
+
+		<div class="page-header" id="reportStatusPanel">
+			<div id="credits">
+				<h2>Your Rewards</h2>
+				<p>{{rewards}}</p>
+			</div>
+			<div id="pendingPanel">
+				<h2>Pending Reports</h2>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Reports links</th>
+							<p>2</p>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="1">1</td>
+							<td>link1</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>link2</td>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+			<div id="passedPanel">
+				<h2>PassedPanel</h2>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Passed Report Links</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>passed link1</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>passed link2</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>passed link3</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="FailedPanel">
+				<h2>FailedPanel</h2>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Failed Report Links</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>Failed link1</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Failed link2</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>Failed link3</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="AllReports">
+				<h2>All Reports</h2>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Links</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="id in url">
+							<td>{{$index + 1}}</td>
+							<td><a ng-href="http://baddriverreports.com/post-report.html?_id={{id}}">click here to review</a></td>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+			<div id="sumPanel">
+				<p>Submit total report: {{reportSum}}</p>
+			</div>
+		</div>
+	</div>
+	
+	<script src="AccountScript.js"></script>
+	<script>
+		function initMap() {
+			var zipCodeLocation;
+			zipCodeLocation = {lat: 34.023, lng: -118.283};
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 13,
+				center: zipCodeLocation
+			});
+			var marker = new google.maps.Marker({
+				position: zipCodeLocation,
+				map: map
+			})
+		}
+	</script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+	<!--Google map Api-->
+	<script async defer
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9G0o9vtA-9Fn_wTW5y_WTnpEUMa6PaMI&callback=initMap">
+	</script>
+</body>
+	
+</html>
