@@ -25,6 +25,7 @@
 	</head>
 <body>
 	<div class="Container" ng-app="AccountApp" ng-controller="displayData">
+		<!--TODO: need to add default value for all display field-->
 		<a ng-init="loadHello()"></a>
 		<div class="page-header" >
 			<h1>My Account</h1>
@@ -60,17 +61,13 @@
 						<tr>
 							<th>#</th>
 							<th>Reports links</th>
-							<p>2</p>
+							<p> Pending: {{pendingSum}}</p>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td rowspan="1">1</td>
-							<td>link1</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>link2</td>
+						<tr ng-repeat="pendingUrl in pendingReportsUrl">
+							<td>{{$index + 1}}</td>
+							<td><a ng-href="{{pendingUrl}}">click here to review pending reports</a></td>
 						</tr>
 						
 					</tbody>
@@ -83,20 +80,13 @@
 						<tr>
 							<th>#</th>
 							<th>Passed Report Links</th>
+							<p>Passed: {{passedSum}}</p>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>passed link1</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>passed link2</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>passed link3</td>
+						<tr ng-repeat="passedUrl in passedReportsUrl">
+							<td>{{$index + 1}}</td>
+							<td><a ng-href="{{passedUrl}}">click here to review passed reports</a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -108,21 +98,14 @@
 						<tr>
 							<th>#</th>
 							<th>Failed Report Links</th>
+							<p>Failed: {{failedSum}}</p>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>Failed link1</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>Failed link2</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>Failed link3</td>
-						</tr>
+					<tr ng-repeat="failedUrl in failedReportsUrl">
+						<td>{{$index + 1}}</td>
+						<td><a ng-href="{{failedUrl}}">click here to review failed reports</a></td>
+					</tr>
 					</tbody>
 				</table>
 			</div>
@@ -136,9 +119,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="id in url">
+						<tr ng-repeat="url in allReportsUrl">
 							<td>{{$index + 1}}</td>
-							<td><a ng-href="http://baddriverreports.com/post-report.html?_id={{id}}">click here to review</a></td>
+							<td><a ng-href="{{url}}">click here to review</a></td>
 						</tr>
 						
 					</tbody>
@@ -154,7 +137,7 @@
 	<script>
 		function initMap() {
 			var zipCodeLocation;
-			zipCodeLocation = {lat: 34.023, lng: -118.283};
+			zipCodeLocation = {lat: 34.023, lng: -118.283};//if no zipcode, default zip code on campus
 			var map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 13,
 				center: zipCodeLocation
