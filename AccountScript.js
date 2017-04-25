@@ -12,7 +12,7 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 			 transformRequest: function() {
 			  var str = [];
 			  str.push(encodeURIComponent("collection") + "=" + encodeURIComponent("account"));
-			  str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("58fe8463feaf695f6648765b"));//for test only
+			  str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("58a68347466990761ce43f3b"));//for test only
 			 //str.push(encodeURIComponent("_id") + "=" + encodeURIComponent(accountId)); //
 			  return str.join("&");
 			 }
@@ -29,9 +29,16 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 		}).error(function(){});
 	};
 
-	var reportsId = [];	//getting all reports objects under this user
-	var linkUrl = [];//collecting link url
-	var reportStatus = [];//getting all reports status
+	var reportsIdList = [];	//getting all reports objects under this user
+	var AllReportsUrlList = [];//collecting link url
+	var failedUrlList = [];//failed reports url list
+	var successUrlList = [];//success reports url list
+	var pendingUrlList = [];//under audit prograss reports url list
+
+    var reportsIndex;// All reports url index, remove later if no use
+	var pendingUrlIndex;// pending reports url index
+	var passedUrlIndex;// passed reports url index
+	var failedUrlIndex;//failed reports url index
 	$scope.getReports = function() {
 		$http({
 			 method: 'POST',
@@ -45,18 +52,49 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 			 }
 		}).success(function (response) {
 			console.log("getting reports...");
-			for(var reportsIndex = 0; reportsIndex < response.length; reportsIndex++){
-				reportsId[reportsIndex] = response[reportsIndex]._id;
-				linkUrl[reportsIndex] = "http://baddriverreports.com/post-report.html?_id=" + response[reportsIndex]._id;
-				// needs to add account_id to Sharath
-				reportStatus[reportsIndex] = response[reportsIndex].status;
+            pendingUrlIndex = 0;
+            passedUrlIndex = 0;
+            failedUrlIndex = 0;
+			for(reportsIndex = 0; reportsIndex < response.length; reportsIndex++){
+                //TODO: the link should be only view mode, now the link is connected to the report page
+                reportsIdList[reportsIndex] = response[reportsIndex]._id;
+                if(response[reportsIndex].status == "uploaded") {// collect pending reports
+					pendingUrlList[pendingUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex];//test only
+                    //add account_id to Sharath, when get dynamic account, use below
+					// pendingUrlList[pendingUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex] + "?" + accountId;
+
+                }
+                if(response[reportsIndex].status == "reported") {// collect passed reports
+                    successUrlList[passedUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex];//test only
+                    //add account_id to Sharath, when get dynamic account, use below
+                    // successUrlList[passedUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex] + "?" + accountId;
+
+                }
+                if(response[reportsIndex].status == "reported") {// collect failed reports
+                    failedUrlList[failedUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex];//test only
+                    //add account_id to Sharath, when get dynamic account, use below
+                    // failedUrlList[failedUrlIndex++] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex] + "?" + accountId;
+
+                }
+
+                //collect all reports under this account, remove later if no use
+                AllReportsUrlList[reportsIndex] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex];//for test
+				//add account_id to Sharath, when get dynamic account, use below
+				//AllReportsUrlList[reportsIndex] = "http://baddriverreports.com/post-report.html?_id=" + reportsIdList[reportsIndex] + "?" + accountId;
+				// reportStatusList[reportsIndex] = response[reportsIndex].status;
 			}
-			$scope.url = reportsId;
-			$scope.reportSum = response.length;
-			$scope.reportStatus = reportStatus;
+            $scope.reportSum = response.length;
+			$scope.pendingSum = pendingUrlList.length;
+			$scope.passedSum = successUrlList.length;
+			$scope.failedSum = failedUrlList.length;
+			$scope.allReportsUrl = AllReportsUrlList;
+            $scope.pendingReportsUrl = pendingUrlList;
+			$scope.passedReportsUrl = successUrlList;
+			$scope.failedReportsUrl = failedUrlList;
 		}).error(function(){});
 
 	};
+	// leave it alone, maybe later will move initMap script from HTML page to here
 	// $scope.initMap = function() {
 	// 	var zipCodeLocation;
 	// 	zipCodeLocation = {lat: 34.023, lng: -118.283};
