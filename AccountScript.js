@@ -1,10 +1,10 @@
 var app = angular.module('AccountApp', []);
 app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 	console.log("hello");
-	//var accountId = window.location.search.split("=")[1];
+	var accountId = window.location.search.split("=")[1];
 	$scope.loadHello = function() {
 		// $scope.initMap();
-		console.log("enter hello");
+		// console.log("enter hello");
 		$http({
 			 method: 'POST',
 			 url: "http://45.55.3.71:9001/readOne",
@@ -12,12 +12,12 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 			 transformRequest: function() {
 			  var str = [];
 			  str.push(encodeURIComponent("collection") + "=" + encodeURIComponent("account"));
-			  str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("58a68347466990761ce43f3b"));//for test only
-			 //str.push(encodeURIComponent("_id") + "=" + encodeURIComponent(accountId)); //
+			  // str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("58a68347466990761ce43f3b"));//for test only
+			 str.push(encodeURIComponent("_id") + "=" + encodeURIComponent(accountId)); //
 			  return str.join("&");
 			 }
 		}).success(function (response) {
-				console.log("success in hello");
+				// console.log("success in hello");
 				$scope.name = response.fname + " " + response.lname;
 				$scope.licensePlateNo = response.licensePlate;
 				$scope.phoneNo = response.phone;
@@ -51,7 +51,7 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 			  return str.join("&");
 			 }
 		}).success(function (response) {
-			console.log("getting reports...");
+			// console.log("getting reports...");
             pendingUrlIndex = 0;
             passedUrlIndex = 0;
             failedUrlIndex = 0;
