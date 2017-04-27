@@ -53,7 +53,7 @@
 
 </head>
 <body>
-<div class="Container" ng-app="AccountApp" ng-controller="displayData">
+<div class="Container" ng-app="AccountApp" ng-controller="displayData" id="containerDiv">
 	<!--TODO: need to add default value for all display field-->
 	<a ng-init="loadHello()"></a>
 	<div class="page-header">
@@ -69,17 +69,21 @@
 				<tbody>
 				<tr>
 					<td><h3>Phone Number: </h3></td>
-					<td><h3 class="bluetext">{{licensePlateNo}}</h3></td>
+					<td><h3 class="bluetext">{{phoneNo}}</h3></td>
 				</tr>
 				<tr>
 					<td><h3>License Plate #: </h3></td>
-					<td><h3 class="bluetext">{{phoneNo}}</h3></td>
+					<td><h3 class="bluetext">{{licensePlateNo}}</h3></td>
+				</tr>
+				<tr>
+					<td><h3>Zipcode #: </h3></td>
+					<td><h3 class="bluetext">{{zipcode}}</h3></td>
 				</tr>
 				</tbody>
 			</table>
 			<br/><br/>
 				<h3>Your Rewards</h3>
-				<p><h3 class="bluetext">{{rewards}}89</h3></p>
+				<p><h3 class="bluetext">{{rewards}}</h3></p>
 		</div>
 		<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" >
 			<h2>Bad Driver Reports near you (last 30 days)</h2>
@@ -169,16 +173,88 @@
 <script src="AccountScript.js"></script>
 <script>
 	function initMap() {
-		var zipCodeLocation;
-		zipCodeLocation = {lat: 34.023, lng: -118.283};//if no zipcode, default zip code on campus
+//		var zipCodeLocation;
+//		zipCodeLocation = {lat: 34.023, lng: -118.283};//if no zipcode, default zip code on campus
+
+        var $element = $('#containerDiv');
+        var scope = angular.element($element).scope();
+
 		var map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 13,
-			center: zipCodeLocation
+			zoom: 10,
+            center: new google.maps.LatLng(scope.center_lat, scope.center_lng),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
-		var marker = new google.maps.Marker({
-			position: zipCodeLocation,
-			map: map
-		})
+
+
+        var gradients = {
+            color: [
+                'rgba(0, 0, 0, 0)',
+                'rgba(0, 0, 0, 0)',
+                'rgba(0, 0, 0, 0)',
+                'rgba(0, 0, 159, 1)',
+                'rgba(255, 0, 0, 1)',
+                'rgba(255, 0, 0, 1)'
+            ]
+        };
+        google.maps.event.addDomListener(
+            window,
+            'load',
+            function () {
+                window.setTimeout(initMap, 4);
+            }
+        );
+        var infowindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder;
+        var marker, i, _lat, _lng;
+
+        for ( i = 0; i < scope.result.length; i++) {
+            marker = new google.maps.Marker({
+
+                position : new google.maps.LatLng(scope.result[i][0], scope.result[i][1]),
+                radius: 13,
+                opacity: 100,
+                map: map,
+                animation: google.maps.Animation.DROP
+            });
+
+
+
+            //heatmap.set('gradient', gradients['color']);
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function(){
+                    _lat=scope.result[i][0];
+                    _lng=scope.result[i][1];
+                    //map.setZoom(9);
+                    geocodeLatLng(geocoder, map, infowindow, _lat, _lng);
+                }
+
+            })(marker,i));
+
+        }//for
+
+        function geocodeLatLng(geocoder, map, infowindow, _lat, _lng) {
+
+            // var input = document.getElementById('latlng').value;
+            // var latlngStr = input.split(',', 2);
+            var latlng = {lat: parseFloat(_lat), lng: parseFloat(_lng)};
+            geocoder.geocode({'location': latlng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        map.setZoom(11);
+                        var marker = new google.maps.Marker({
+                            position: latlng,
+                            map: map
+                        });
+                        infowindow.setContent(results[1].formatted_address);
+                        infowindow.open(map, marker);
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        }
 	}
 </script>
 <!-- Latest compiled and minified CSS -->
@@ -187,8 +263,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
 <!--Google map Api-->
+<!--<script async defer-->
+		<!--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9G0o9vtA-9Fn_wTW5y_WTnpEUMa6PaMI&callback=initMap">-->
+<!--</script>-->
 <script async defer
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9G0o9vtA-9Fn_wTW5y_WTnpEUMa6PaMI&callback=initMap">
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4qbjtP9PAOvPURg6kuMxBrpfd8KBtggU&callback=initMap">
 </script>
 </body>
 
