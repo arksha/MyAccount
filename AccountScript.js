@@ -19,7 +19,7 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 			  var str = [];
 			  str.push(encodeURIComponent("collection") + "=" + encodeURIComponent("account"));
 			  // str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("58a68347466990761ce43f3b"));//for test only
-			 str.push(encodeURIComponent("_id") + "=" + encodeURIComponent("accountId")); //
+			 str.push(encodeURIComponent("_id") + "=" + encodeURIComponent(accountId)); //
 			  return str.join("&");
 			 }
 		}).success(function (response) {
