@@ -25,26 +25,27 @@ app.controller("displayData", ['$scope', '$http', function ($scope, $http) {
 		}).success(function (response) {
 				// console.log("success in hello");
 
-                if(!response.zipcode || response.zipcode == ""){// if there is no zipcode field or zipcode is invalid set default center to campus
-                    $scope.center_lat = "34.022352";
-                    $scope.center_lng = "-118.285117";
-                }
-                else{
+                if(!response.zipcode || response.zipcode == ""){
                     var address = response.zipcode;
                     var geocoder= new google.maps.Geocoder();
                     geocoder.geocode( { 'address': address}, function(results, status) {
 
-					if (status == google.maps.GeocoderStatus.OK) {
-						//console.log("success");
-						$scope.center_lat = results[0].geometry.location.lat();
-						$scope.center_lng = results[0].geometry.location.lng();
+			if (status == google.maps.GeocoderStatus.OK) {
+				//console.log("success");
+				$scope.center_lat = results[0].geometry.location.lat();
+				$scope.center_lng = results[0].geometry.location.lng();
 
-					} else {
-						alert("Geocode was not successful for the following reason: " + status);
-					}
-					// console.log("lat "+$scope.center_lat);
-					// console.log("long "+$scope.center_lng);
+			} else {
+				alert("Geocode was not successful for the following reason: " + status);
+			}
+			// console.log("lat "+$scope.center_lat);
+			// console.log("long "+$scope.center_lng);
                     });
+		
+                }
+                else{// if there is no zipcode field or zipcode is invalid set default center to campus
+                    $scope.center_lat = "34.022352";
+                    $scope.center_lng = "-118.285117";
 
                 }
 
